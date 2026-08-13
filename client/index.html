@@ -1,29 +1,10 @@
 <!doctype html>
 <html lang="en"><head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#0E1116">
+<meta http-equiv="refresh" content="0; url=app.full.html">
 <title>NeedRail</title>
 </head>
-<body style="margin:0;background:#0E1116;color:#EAF0F6;font:15px system-ui;min-height:100dvh;display:grid;place-items:center">
-<p id="s">Assembling NeedRail client…</p>
-<script>
-(async () => {
-  const n = 10;
-  const chunks = [];
-  for (let i = 0; i < n; i++) {
-    const r = await fetch("./parts/p" + i + ".b64");
-    if (!r.ok) throw new Error("missing part " + i);
-    chunks.push(await r.text());
-  }
-  const b64 = chunks.join("").replace(/\s/g, "");
-  const bin = Uint8Array.from(atob(b64), c => c.charCodeAt(0));
-  const html = new TextDecoder().decode(bin);
-  document.open();
-  document.write(html);
-  document.close();
-})().catch(e => {
-  document.getElementById("s").textContent = "Failed: " + e + " — open app.full.html if available.";
-});
-</script>
+<body style="background:#0E1116;color:#EAF0F6;font:15px system-ui;padding:2rem">
+<p>Opening <a href="app.full.html" style="color:#62A8FF">NeedRail Client</a>…</p>
+<p class="dim" style="opacity:.6;font-size:13px;margin-top:1rem">Clone the repo and open <code>client/app.full.html</code> if the redirect target is not yet on this branch.</p>
 </body></html>
