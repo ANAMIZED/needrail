@@ -75,7 +75,7 @@ class Project(BaseModel):
 class Need(BaseModel):
     id: str = Field(default_factory=new_id)
     project_id: Optional[str] = None
-    requester: str  # agent-id | wallet | did
+    requester: str  # agent-id | wallet | did | erc8004
     type: NeedType = NeedType.other
     title: str
     description: str = ""
@@ -113,6 +113,40 @@ class Receipt(BaseModel):
 
     class Config:
         populate_by_name = True
+
+
+# ---------------------------------------------------------------------------
+# Phase 1 Trust extensions — compose with ERC-8004 / EAS / ERC-8183
+# ---------------------------------------------------------------------------
+
+class AgentIdentity(BaseModel):
+    """Preferred: ERC-8004 agent ID or DID. Fallback: wallet or opaque string."""
+    scheme: str = "wallet"  # "erc8004" | "did" | "wallet" | "github"
+    value: str
+    chain: Optional[str] = None  # CAIP-2 when relevant
+    metadata_uri: Optional[str] = None
+
+
+class EscrowMode(str, Enum):
+    none = "none"           # direct-to-pay_to (default)
+    optional = "optional"   # funder may choose escrow
+    required = "required"   # high-value Needs
+
+
+class EscrowTerms(BaseModel):
+    """Optional non-custodial escrow (compose with ERC-8183 or equivalent)."""
+    mode: EscrowMode = EscrowMode.none
+    evaluator: Optional[str] = None          # agent/wallet/DID that can attest completion
+    timeout_seconds: Optional[int] = None
+    escrow_contract: Optional[str] = None    # CAIP-10 or address when used
+    release_condition: str = "evaluator_attestation"
+
+
+class AttestationRef(BaseModel):
+    """Pointer to an external attestation (EAS UID, ERC-8183 event, etc.)."""
+    system: str                              # "eas" | "erc8183" | "needrail" | "github"
+    uid_or_id: str
+    url: Optional[str] = None
 
 
 class CreateNeedRequest(BaseModel):
