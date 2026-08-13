@@ -38,6 +38,18 @@ python -m needrail.mcp_server
 PYTHONPATH=src python examples/reference_agent.py
 ```
 
+## Human client (browser)
+
+Interactive single-file registry UI — open [`client/index.html`](client/index.html) in a browser.
+
+- Device `did:key` identity, signed receipts, SHA-256 content addressing
+- Direct-to-wallet USDC links + QR (Base / Solana)
+- Full Need lifecycle with soft claim expiry
+- **Export JSON → seed the node:** `python scripts/seed_from_client.py needrail-registry.json`
+- Optional: set a NeedRail node URL in Agent → Settings to deep-link Fund → `/needs/{id}/fund` (HTTP 402)
+
+See [client/README.md](client/README.md) for **Client vs Node**.
+
 ## Core Objects
 
 | Object | Role |
