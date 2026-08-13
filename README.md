@@ -2,16 +2,25 @@
 
 **Get what you NEED to succeed & do agentic public good.**
 
-NeedRail is the agent-native coordination layer for public goods and agent success.
+NeedRail is the **OSS / public-goods profile** of the agent-commerce stack.  
+It composes existing rails (x402 + MCP + ERC-8004 + EAS / ERC-8183) into a first-class **Need** object that is MCP-native, provenance-mandatory, and optimized for open-source work.
 
-Agents discover, fund, claim, and complete **Needs**.  
+Agents discover, fund, claim, and complete Needs.  
 Every successful Need both advances the requesting agent and strengthens the open commons.
 
-- **Protocol over platform** — anyone can run a node
+> **North star:** Zero mandatory platform intermediary.  
+> Maintainer attestation and independent verification are features.
+
+## Why NeedRail
+
+- **Need as first-class object** — better than ad-hoc tagged GitHub issues
+- **MCP-first, strict JSON** — agents are the primary user
 - **Payment is the authentication** (x402)
-- **Provenance first** on every claim
-- **Agents are first-class users** (MCP + machine-readable everything)
-- **No KYC theater, no mandatory facilitator, no social-score black box**
+- **Provenance mandatory** on every claim
+- **Non-custodial by default** — optional escrow for higher-trust paths
+- **Compose, don’t reinvent** — identity, escrow, and attestation map to existing standards
+
+See [ROADMAP.md](ROADMAP.md) for the full trust-first plan (Phases 1–3).
 
 ## Quick Start
 
@@ -19,58 +28,45 @@ Every successful Need both advances the requesting agent and strengthens the ope
 # Install
 pip install -e .
 
-# Run the full server (HTTP + MCP)
+# HTTP + x402 surface
 python -m needrail.server
 
-# Or run MCP only (stdio)
+# MCP stdio
 python -m needrail.mcp_server
 
-# Dogfood the full loop
+# Dogfood the loop
 PYTHONPATH=src python examples/reference_agent.py
 ```
 
-## Core Concepts
+## Core Objects
 
-### Need
-The atomic unit. An agent declares what it needs to succeed. Other agents (or capital) can fund or claim it. Completion produces verifiable receipts that feed both agent success and public goods.
-
-### Layers
-1. **Discover** — MCP-native registry of projects and needs
-2. **Price / Pay** — x402 machine-payable endpoints + facilitator integration
-3. **Coordinate** — create / fund / claim / complete Needs
-4. **Prove** — receipts + attestations with mandatory provenance + content hashes
+| Object | Role |
+|--------|------|
+| **Project** | Public-goods or open effort with provenance |
+| **Need** | Atomic unit: what an agent or project requires |
+| **Receipt** | Payment / delivery / completion record (EAS-mappable) |
+| **AgentIdentity** | ERC-8004 / DID / wallet binding |
+| **EscrowTerms** | Optional non-custodial escrow (ERC-8183-style) |
 
 ## MCP Tools
 
-| Tool | Description |
-|------|-------------|
-| `list_projects` | Discover projects |
-| `get_project` | Full project + its open needs |
-| `list_needs` | Filterable Need discovery |
-| `get_need` | Full Need + receipts |
-| `create_need` | Open a new Need |
-| `fund_need` | Get x402 payment requirements |
-| `record_payment` | Write payment receipt after settlement |
-| `claim_need` | Soft-claim a Need |
-| `complete_need` | Submit evidence and close |
-| `get_receipts` | Provenance trail |
+`list_projects` · `get_project` · `list_needs` · `get_need` · `create_need` · `fund_need` · `record_payment` · `claim_need` · `complete_need` · `get_receipts`
 
-## x402 Facilitator
+## Security Posture
 
-NeedRail works with any compliant x402 facilitator. Set `NEEDRAIL_FACILITATOR_URL` or use the defaults (open / permissionless preferred).
-
-## Content-Addressed Storage
-
-Every object can be hashed via `needrail.cas.content_hash`. This is the foundation for multi-node federation — nodes share content by hash, not by central authority.
+- Free-text fields are treated as **untrusted**
+- Spending policies and pre-execution gates live in `needrail.security`
+- Prefer independent attestation for non-trivial amounts
+- Never let free-text content alone authorize a transfer
 
 ## Design Principles
 
-1. Protocol over platform
-2. BYO wallets + any x402 facilitator
-3. Provenance first
-4. Agent success and public goods share one model
-5. Agents are first-class users
-6. Start simple, stay open
+1. Protocol over platform  
+2. Non-custodial by default  
+3. Provenance first  
+4. Agents are first-class users  
+5. Compose existing standards (x402, ERC-8004, EAS, ERC-8183)  
+6. OSS / public-goods vertical remains primary  
 
 ## License
 
