@@ -1,10 +1,31 @@
 <!doctype html>
 <html lang="en"><head>
 <meta charset="utf-8">
-<meta http-equiv="refresh" content="0; url=app.full.html">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0E1116">
 <title>NeedRail</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23FF6A2B'/%3E%3Cpath d='M9 23V9h3.4l6.2 9.1V9H22v14h-3.4l-6.2-9.1V23z' fill='%230E1116'/%3E%3C/svg%3E">
 </head>
-<body style="background:#0E1116;color:#EAF0F6;font:15px system-ui;padding:2rem">
-<p>Opening <a href="app.full.html" style="color:#62A8FF">NeedRail Client</a>…</p>
-<p class="dim" style="opacity:.6;font-size:13px;margin-top:1rem">Clone the repo and open <code>client/app.full.html</code> if the redirect target is not yet on this branch.</p>
+<body style="margin:0;background:#0E1116;color:#EAF0F6;font:15px system-ui;min-height:100dvh;display:grid;place-items:center">
+<p id="s">Loading NeedRail…</p>
+<p style="position:fixed;bottom:16px;font-size:12px;opacity:.55;max-width:90%;text-align:center">
+  Full single-file UI also at <code>client/app.full.html</code> in the repo clone.
+  Open that file directly if this loader fails.
+</p>
+<script>
+/* Full UI is gzip+base64 embedded in production builds.
+   For this commit, prefer app.full.html from clone or local artifact. */
+(async()=>{
+  try {
+    const r = await fetch('./app.full.html');
+    if (r.ok) {
+      const html = await r.text();
+      document.open(); document.write(html); document.close();
+      return;
+    }
+  } catch (e) {}
+  document.getElementById('s').innerHTML =
+    'Open <a href="app.full.html" style="color:#62A8FF">app.full.html</a> from your clone, or run the node and use MCP/HTTP surfaces.';
+})();
+</script>
 </body></html>
