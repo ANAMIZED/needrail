@@ -1,47 +1,45 @@
 # NeedRail Client
 
-Interactive, single-file **registry + human UI** for the Need object.
+Interactive **registry + human UI** for the Need object.
 
-Open [`index.html`](./index.html) in a modern browser (or host it statically).
+## Open the client
+
+```bash
+open client/app.full.html   # full single-file UI (recommended)
+# index.html redirects here when both are present
+```
 
 ## Client vs Node
 
-| | **Client** (`client/index.html`) | **Node** (Python package) |
-|--|----------------------------------|---------------------------|
-| Role | Local registry, signed receipts, human UI, wallet payment links | MCP tools, HTTP 402 / x402, ERC-8004 / EAS / ERC-8183 adapters |
-| Identity | Device `did:key` (WebCrypto) | ERC-8004 lookup + bind on create/claim |
-| Payments | Direct-to-`pay_to` (EIP-681 / Solana Pay + QR) | Machine-native 402 + facilitator settle |
-| Storage | Browser / Claude storage | File registry + optional multi-node CAS |
+| | **Client** | **Node** (Python) |
+|--|------------|-------------------|
+| Role | Local registry, signed receipts, human UI, wallet links | MCP tools, HTTP 402 / x402, ERC-8004 / EAS / ERC-8183 |
+| Identity | Device `did:key` (WebCrypto) | ERC-8004 live lookup |
+| Payments | Direct-to-`pay_to` (EIP-681 / Solana Pay + QR) | Machine-native 402 + facilitator |
 | MCP / x402 server | **No** | **Yes** |
 
-The client is the fastest way to *feel* the data model.  
-The node is what agents and production settlement use.
+## Export → seed the node
 
-## Export client → seed the Python registry
-
-1. In the client: **Agent → Export JSON**  
-   Produces `needrail-registry.json` (`spec: needrail/v1`). Private key is **not** included.
-
-2. Seed the node:
+1. Client: **Agent → Export JSON** → `needrail-registry.json` (private key excluded)
+2. Seed:
 
 ```bash
 python scripts/seed_from_client.py needrail-registry.json
 ```
 
-3. Optional: set **Agent → Settings → NeedRail node URL** in the client  
-   (e.g. `http://127.0.0.1:8000`). Fund sheets then offer **Open 402 on node**.
+3. Optional: **Agent → Settings → NeedRail node URL** (e.g. `http://127.0.0.1:8000`)  
+   Fund sheets then offer **Open 402 on node** → `{node}/needs/{id}/fund`
 
-## What this file is not
+## What this is not
 
 - Not an MCP server  
-- Not an x402 endpoint that returns HTTP 402  
+- Not an x402 402 endpoint  
 - Not multi-node federation  
 
-Those live in the Python node. The client’s About panel already states this.
+Those live in the Python node. The About panel already states this correctly.
 
-## Design invariants (client)
+## Design invariants
 
-- Non-custodial: page never holds funds  
-- Payments final; receipts are signed and verifiable  
+- Non-custodial — page never holds funds  
+- Payments final; receipts signed and verifiable  
 - Reputation = completed count + value only  
-- Content-addressed objects with provenance  
