@@ -41,8 +41,13 @@ def root():
         "tagline": "Get what you NEED to succeed & do agentic public good.",
         "mcp": "stdio via `python -m needrail.mcp_server`",
         "docs": "/docs",
-        "phase": "1-3 vertical slice live",
-        "repo": "https://github.com/ANAMIZED/needrail",
+        "client": "client/index.html",
+        "phase": "live agent-commerce public good",
+        "defaults": {
+            "custody": "non-custodial direct-to-pay_to",
+            "escrow": "optional ERC-8183",
+            "identity": "ERC-8004 / did / wallet",
+        },
     }
 
 
@@ -99,21 +104,37 @@ def get_need(need_id: str):
 
 @app.post("/needs")
 def create_need(body: CreateNeedRequest):
+    from .adapters.erc8004 import resolve_requester
+    from .adapters.antispam import get_deposit_ledger, DepositKind, DEFAULT_CREATE_DEPOSIT
+    from .security import sanitize_for_agent
+
     reg = get_registry()
+    identity = resolve_requester(body.requester)
+    requester_ref = identity.get("ref") or body.requester
     need = Need(
         id=new_id(),
         project_id=body.project_id,
-        requester=body.requester,
+        requester=requester_ref,
         type=body.type,
         title=body.title,
-        description=body.description,
+        description=sanitize_for_agent(body.description or ""),
         amount_or_bounty=body.amount_or_bounty,
         acceptance_criteria=body.acceptance_criteria,
-        pay_to=body.pay_to or [Wallet(chain=body.amount_or_bounty.network, address="0x0000000000000000000000000000000000000000")],
-        provenance=Provenance(source=body.provenance_source, attested_by=body.requester),
+        pay_to=body.pay_to
+        or [Wallet(chain=body.amount_or_bounty.network, address="0x0000000000000000000000000000000000000000")],
+        provenance=Provenance(
+            source=body.provenance_source or "needrail.http",
+            attested_by=requester_ref,
+        ),
     )
     created = reg.create_need(need)
-    return created.model_dump(mode="json", by_alias=True)
+    dep = get_deposit_ledger().lock(
+        DepositKind.create, created.id, requester_ref, DEFAULT_CREATE_DEPOSIT
+    )
+    out = created.model_dump(mode="json", by_alias=True)
+    out["identity"] = identity
+    out["create_deposit"] = dep.model_dump(mode="json")
+    return out
 
 
 @app.post("/needs/{need_id}/fund")
@@ -150,15 +171,17 @@ async def fund_need(need_id: str, request: Request):
 
     accepts = []
     for w in need.pay_to:
-        accepts.append({
-            "scheme": "exact",
-            "network": w.chain,
-            "maxAmountRequired": need.amount_or_bounty.target,
-            "asset": w.asset,
-            "payTo": w.address,
-            "resource": f"/needs/{need_id}/fund",
-            "description": f"Fund Need: {need.title}",
-        })
+        accepts.append(
+            {
+                "scheme": "exact",
+                "network": w.chain,
+                "maxAmountRequired": need.amount_or_bounty.target,
+                "asset": getattr(w, "asset", None) or need.amount_or_bounty.asset,
+                "payTo": w.address,
+                "resource": f"/needs/{need_id}/fund",
+                "description": f"Fund Need: {need.title}",
+            }
+        )
 
     body = {
         "x402Version": 1,
@@ -172,12 +195,21 @@ async def fund_need(need_id: str, request: Request):
 
 @app.post("/needs/{need_id}/claim")
 def claim_need(need_id: str, claimer: str):
+    from .adapters.erc8004 import resolve_requester
+    from .adapters.antispam import get_deposit_ledger, DepositKind, DEFAULT_CLAIM_DEPOSIT
+
     reg = get_registry()
+    identity = resolve_requester(claimer)
+    ref = identity.get("ref") or claimer
     try:
-        need = reg.claim_need(need_id, claimer)
-        return need.model_dump(mode="json", by_alias=True)
+        need = reg.claim_need(need_id, ref)
     except (KeyError, ValueError) as e:
         raise HTTPException(400, str(e))
+    dep = get_deposit_ledger().lock(DepositKind.claim, need_id, ref, DEFAULT_CLAIM_DEPOSIT)
+    out = need.model_dump(mode="json", by_alias=True)
+    out["identity"] = identity
+    out["claim_deposit"] = dep.model_dump(mode="json")
+    return out
 
 
 @app.post("/needs/{need_id}/complete")
@@ -199,8 +231,44 @@ def get_receipts(need_id: Optional[str] = None, project_id: Optional[str] = None
     ]
 
 
+@app.get("/agents/{agent_ref}/reputation")
+def agent_reputation(agent_ref: str):
+    from urllib.parse import unquote
+    from .reputation import reputation_for
+
+    return reputation_for(unquote(agent_ref), get_registry())
+
+
+@app.get("/production")
+def production_status():
+    """Honest production readiness surface."""
+    import os
+    from .adapters.eas import registration_instructions
+    from .adapters.erc8183_onchain import get_onchain_config
+
+    eas = registration_instructions()
+    esc = get_onchain_config()
+    return {
+        "non_custodial_default": True,
+        "erc8004_live_lookup": True,
+        "eas_schemas_registered": eas.get("registered"),
+        "eas_registration_steps": eas.get("steps"),
+        "erc8183_onchain_enabled": esc.use_onchain,
+        "erc8183_contract": esc.contract,
+        "facilitator": os.getenv("NEEDRAIL_FACILITATOR_URL", "https://x402.org/facilitator"),
+        "client": "client/index.html",
+        "next_human_steps": [
+            "Register EAS schemas on base.easscan.org; set NEEDRAIL_EAS_RECEIPT_SCHEMA and NEEDRAIL_EAS_COMPLETION_SCHEMA",
+            "Publish MCP server to the official MCP Registry",
+            "List funding URL on Agentic.market / x402 Bazaar",
+            "Set NEEDRAIL_FACILITATOR_URL to a production facilitator",
+        ],
+    }
+
+
 def main():
     import uvicorn
+
     uvicorn.run("needrail.server:app", host="0.0.0.0", port=8420, reload=False)
 
 
