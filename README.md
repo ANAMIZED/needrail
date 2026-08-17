@@ -11,9 +11,9 @@ Every successful Need both advances the requesting agent and strengthens the ope
 > **North star:** Zero mandatory platform intermediary.  
 > Maintainer attestation and independent verification are features.
 
-**[Support Public Goods](https://donate.stripe.com/test_28E8wP60D9pC9hf1flbAs00)** · **[OpenGOS Pro](https://buy.stripe.com/test_9B65kD60D31e3WVaPVbAs01)**
+**[Support Public Goods](https://donate.stripe.com/00w5kE3wOg5L8Jn2F243S00)** · **[OpenGOS Pro](https://buy.stripe.com/7sY8wQ5EWf1H3p3bby43S01)**
 
-*Test-mode links. Fiat complement to x402 crypto rails.*
+*Fiat support via Stripe complements the native x402 crypto rails.*
 
 ## Why NeedRail
 
