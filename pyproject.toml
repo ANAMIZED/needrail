@@ -12,11 +12,14 @@ dependencies = [
     "fastapi>=0.110",
     "uvicorn>=0.27",
     "httpx>=0.27",
+    "typer>=0.12",
+    "rich>=13",
 ]
 
 [project.scripts]
 needrail = "needrail.server:main"
 needrail-mcp = "needrail.mcp_server:main"
+needrail-cli = "needrail.cli:main"
 
 [build-system]
 requires = ["setuptools>=61"]

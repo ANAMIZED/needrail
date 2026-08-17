@@ -1,96 +1,38 @@
 # NeedRail
 
-**Get what you NEED to succeed & do agentic public good.**
+[![CI](https://github.com/ANAMIZED/needrail/actions/workflows/ci.yml/badge.svg)](https://github.com/ANAMIZED/needrail/actions/workflows/ci.yml)
+[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
+[![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
+[![MCP](https://img.shields.io/badge/MCP-server-purple.svg)](src/needrail/mcp_server.py)
+[![SDK](https://img.shields.io/badge/SDK-Python-green.svg)](src/needrail/sdk/)
+[![CLI](https://img.shields.io/badge/CLI-needrail--cli-orange.svg)](src/needrail/cli.py)
+[![API](https://img.shields.io/badge/API-FastAPI-009688.svg)](src/needrail/server.py)
 
-NeedRail is the **OSS / public-goods profile** of the agent-commerce stack.  
-It composes existing rails (x402 + MCP + ERC-8004 + EAS / ERC-8183) into a first-class **Need** object that is MCP-native, provenance-mandatory, and optimized for open-source work.
+**NeedRail — Get what you NEED to succeed & do agentic public good.**
 
-Agents discover, fund, claim, and complete Needs.  
-Every successful Need both advances the requesting agent and strengthens the open commons.
+Agent-native coordination layer for public goods (MCP + x402 + Needs).
 
-> **North star:** Zero mandatory platform intermediary.  
-> Maintainer attestation and independent verification are features.
+**[Support Public Goods](https://donate.stripe.com/00w5kE3wOg5L8Jn2F243S00)**
 
-**[Support Public Goods](https://donate.stripe.com/00w5kE3wOg5L8Jn2F243S00)** · **[OpenGOS Pro](https://buy.stripe.com/7sY8wQ5EWf1H3p3bby43S01)**
+## Surfaces
 
-### Non-custodial USDC (preferred for agents)
-
-| Network | Address | Explorer |
-|---------|---------|----------|
-| **Base** | `0xD3d0E9eDAe3Ac7bb199a8EAA761BdA423b878438` | [basescan](https://basescan.org/address/0xD3d0E9eDAe3Ac7bb199a8EAA761BdA423b878438) |
-| **Ethereum** | `0xD3d0E9eDAe3Ac7bb199a8EAA761BdA423b878438` | [etherscan](https://etherscan.io/address/0xD3d0E9eDAe3Ac7bb199a8EAA761BdA423b878438) |
-| **Solana** | `ETQwWf19axArsY493UfC6bxe2BmEzmzvCb58PPnC38A` | [solscan](https://solscan.io/account/ETQwWf19axArsY493UfC6bxe2BmEzmzvCb58PPnC38A) |
-
-*Fiat support via Stripe complements the native x402 crypto rails.*
-
-## Why NeedRail
-
-- **Need as first-class object** — better than ad-hoc tagged GitHub issues
-- **MCP-first, strict JSON** — agents are the primary user
-- **Payment is the authentication** (x402)
-- **Provenance mandatory** on every claim
-- **Non-custodial by default** — optional escrow for higher-trust paths
-- **Compose, don’t reinvent** — identity, escrow, and attestation map to existing standards
-
-See [ROADMAP.md](ROADMAP.md) for the full trust-first plan (Phases 1–3).
+| Surface | Entry |
+|---------|-------|
+| **API** | `needrail` (FastAPI) |
+| **MCP** | `needrail-mcp` |
+| **CLI** | `needrail-cli status` |
+| **SDK** | `from needrail.sdk import NeedRailClient` |
+| **Multi-agent** | expressor → matcher → fulfiller + `skills/multi-agent-workflow/` |
+| **CI** | `.github/workflows/ci.yml` |
 
 ## Quick Start
 
 ```bash
-# Install
 pip install -e .
-
-# HTTP + x402 surface
-python -m needrail.server
-
-# MCP stdio
-python -m needrail.mcp_server
-
-# Dogfood the loop
-PYTHONPATH=src python examples/reference_agent.py
+needrail-cli status
+needrail-mcp
+needrail
 ```
-
-## Human client (browser)
-
-Interactive single-file registry UI — open [`client/index.html`](client/index.html) in a browser.
-
-- Device `did:key` identity, signed receipts, SHA-256 content addressing
-- Direct-to-wallet USDC links + QR (Base / Solana)
-- Full Need lifecycle with soft claim expiry
-- **Export JSON → seed the node:** `python scripts/seed_from_client.py needrail-registry.json`
-- Optional: set a NeedRail node URL in Agent → Settings to deep-link Fund → `/needs/{id}/fund` (HTTP 402)
-
-See [client/README.md](client/README.md) for **Client vs Node**.
-
-## Core Objects
-
-| Object | Role |
-|--------|------|
-| **Project** | Public-goods or open effort with provenance |
-| **Need** | Atomic unit: what an agent or project requires |
-| **Receipt** | Payment / delivery / completion record (EAS-mappable) |
-| **AgentIdentity** | ERC-8004 / DID / wallet binding |
-| **EscrowTerms** | Optional non-custodial escrow (ERC-8183-style) |
-
-## MCP Tools
-
-`list_projects` · `get_project` · `list_needs` · `get_need` · `create_need` · `fund_need` · `record_payment` · `claim_need` · `complete_need` · `get_receipts`
-
-## Security Posture
-
-- Free-text fields are treated as **untrusted**
-- Spending policies and pre-execution gates live in `needrail.security`
-- Prefer independent attestation for non-trivial amounts
-- Never let free-text content alone authorize a transfer
-
-## Design Principles
-
-1. Protocol over platform  
-2. Non-custodial by default  
-3. Provenance first  
-4. Agents are first-class users  
-5. Compose existing standards (x402, ERC-8004, EAS, ERC-8183)  
-6. OSS / public-goods vertical remains primary  
 
 ## License
 
