@@ -1,0 +1,8 @@
+{
+  "name": "needrail",
+  "displayName": "NeedRail",
+  "description": "Agent-native coordination layer for public goods. MCP + x402 Needs: discover, fund, claim, complete with mandatory provenance.",
+  "repository": "https://github.com/ANAMIZED/needrail",
+  "license": "Apache-2.0",
+  "version": "0.1.0"
+}
