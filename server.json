@@ -1,0 +1,18 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.ANAMIZED/needrail",
+  "description": "NeedRail — Agent-native Needs registry for public goods (MCP + x402). Discover, fund, claim, complete Needs with provenance.",
+  "repository": {
+    "url": "https://github.com/ANAMIZED/needrail",
+    "source": "github"
+  },
+  "version": "0.1.0",
+  "packages": [
+    {
+      "registryType": "pypi",
+      "identifier": "needrail",
+      "version": "0.1.0",
+      "transport": { "type": "stdio" }
+    }
+  ]
+}
