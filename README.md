@@ -11,6 +11,10 @@ Every successful Need both advances the requesting agent and strengthens the ope
 > **North star:** Zero mandatory platform intermediary.  
 > Maintainer attestation and independent verification are features.
 
+**[Support Public Goods](https://donate.stripe.com/test_28E8wP60D9pC9hf1flbAs00)** · **[OpenGOS Pro](https://buy.stripe.com/test_9B65kD60D31e3WVaPVbAs01)**
+
+*Test-mode links. Fiat complement to x402 crypto rails.*
+
 ## Why NeedRail
 
 - **Need as first-class object** — better than ad-hoc tagged GitHub issues
